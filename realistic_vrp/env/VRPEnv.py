@@ -1,13 +1,19 @@
 
 # VRP gym Environment Class
 # instance = {'node_features':__, 'edge_features':__, 'coordinates':__}
-# For now assuming only the demands as edge features, without dynamism as in Kool et al implementation
+# For now assuming only the demands as edge features, without dynamism like in Kool et al implementation
 
 import gym
 from gym import spaces
 import torch
 import numpy as np
 import collections
+
+import sys
+sys.path.append("../../realistic_vrp")
+from matplotlib import pyplot as plt
+
+from plot_vrp import *
 
 
 class VRPEnv(gym.Env):
@@ -111,4 +117,15 @@ class VRPEnv(gym.Env):
         print(f"Env: {self.env_id}, step for action: {curr_pos_idx}-{chosen_node_idx}, reward: {reward}, done: {self._all_done}")
         #print(obs, reward, self._all_done)
         return obs, reward, self._all_done, {}
+    
+    
+    
+    def render(self, obs, tours):
+        """
+        Plots the customer nodes with the optimal routes selected
+        """
+        
+        for i, (data, tour) in enumerate(zip(obs, tours)):
+            fig, ax = plt.subplots(figsize=(10, 10))
+            plot_vehicle_routes(data, tour, ax, visualize_demands=False, demand_scale=50, round_demand=True)
     
